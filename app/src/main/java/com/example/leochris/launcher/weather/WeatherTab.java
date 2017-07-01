@@ -44,6 +44,7 @@ public class WeatherTab extends Fragment implements YahooWeatherInfoListener {
     private LineChart mLineChart;
     float[][] mValues = new float[2][6];
 
+    //weather updates every 5s
     private YahooWeather mYahooWeather = YahooWeather.getInstance(5000, true);
 
     private ProgressDialog mProgressDialog;
@@ -64,12 +65,14 @@ public class WeatherTab extends Fragment implements YahooWeatherInfoListener {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_weather, container, false);
 
+        //default weather font
         weatherFont = Typeface.createFromAsset(getContext().getAssets(), "fonts/weather.ttf");
 
+        //progress dialog
         mProgressDialog = new ProgressDialog(getContext());
         mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 
-
+        //update textview
         mTvTitle = (TextView) v.findViewById(R.id.textview_title);
         date = (TextView) v.findViewById(R.id.date_and_time);
         temperature = (TextView) v.findViewById(R.id.temperature);
@@ -77,6 +80,7 @@ public class WeatherTab extends Fragment implements YahooWeatherInfoListener {
         humidity = (TextView) v.findViewById(R.id.humidity_index);
         windspeed = (TextView) v.findViewById(R.id.windspped_index);
 
+        //forecast icons
         icon1 = (TextView) v.findViewById(R.id.icon1);
         icon1.setTypeface(weatherFont);
 
@@ -95,9 +99,11 @@ public class WeatherTab extends Fragment implements YahooWeatherInfoListener {
         icon6 = (TextView) v.findViewById(R.id.icon6);
         icon6.setTypeface(weatherFont);
 
+        //forecast line graph
         mLineChart = new LineChart((CardView) v.findViewById(R.id.chart_card), getContext());
         mLineChart.init();
 
+        //location
         String _location = "Singapore, SG";
         if (!TextUtils.isEmpty(_location)) {
             searchByPlaceName(_location);
@@ -106,6 +112,7 @@ public class WeatherTab extends Fragment implements YahooWeatherInfoListener {
             Toast.makeText(getContext(), "location is not inputted", Toast.LENGTH_SHORT).show();
         }
 
+        //today forecast
         weatherIcon = (TextView) v.findViewById(R.id.weather_icon);
         weatherIcon.setTypeface(weatherFont);
         return v;
@@ -142,10 +149,12 @@ public class WeatherTab extends Fragment implements YahooWeatherInfoListener {
             mValues[1][0] = (float) weatherInfo.getCurrentTemp() + 2;
 
             if (weatherInfo.getCurrentCode() != 3200) {
+                //update weather icons
                 setWeatherIcon(weatherInfo.getCurrentCode(), weatherIcon);
                 setWeatherIcon(weatherInfo.getCurrentCode(), icon1);
             }
             for (int i = 0; i < YahooWeather.FORECAST_INFO_MAX_SIZE; i++) {
+                //parse infos into graph values
                 final WeatherInfo.ForecastInfo forecastInfo = weatherInfo.getForecastInfoList().get(i);
                 mValues[0][i+1] = (float) forecastInfo.getForecastTempLow();
                 mValues[1][i+1] = (float) forecastInfo.getForecastTempHigh();

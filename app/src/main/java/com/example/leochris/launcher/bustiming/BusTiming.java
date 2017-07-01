@@ -24,16 +24,18 @@ public class BusTiming extends Fragment {
 
         //getWindow().requestFeature(Window.FEATURE_PROGRESS);
 
+        //fit to screen
         webview.getSettings().setJavaScriptEnabled(true);
         webview.getSettings().setDomStorageEnabled(true);
-
         webview.getSettings().setLoadWithOverviewMode(true);
         webview.getSettings().setUseWideViewPort(true);
 
+        //disable scrolling
         webview.setVerticalScrollBarEnabled(false);
         webview.setHorizontalScrollBarEnabled(false);
         webview.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
 
+        //bus timing url
         webview.loadUrl("https://appventure.nushigh.edu.sg/tv/4.php");
         webview.setWebViewClient(new WebViewClient() {
             @Override

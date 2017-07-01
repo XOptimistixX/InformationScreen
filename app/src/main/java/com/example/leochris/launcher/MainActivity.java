@@ -11,7 +11,6 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
-import com.example.leochris.launcher.appshortcut.AppsGridFragment;
 import com.example.leochris.launcher.featured.FeaturedFragment;
 import com.example.leochris.launcher.weather.WeatherTab;
 import com.ogaclejapan.smarttablayout.SmartTabLayout;
@@ -35,15 +34,9 @@ public class MainActivity extends AppCompatActivity {
         viewPager = (ViewPager) findViewById(R.id.viewpager);
         adapter = new ViewPagerAdapter(getSupportFragmentManager());
 
-        Fragment imageFragment = new ImageTab();
-
-        Fragment videoFragment = new VideoTab();
-
         adapter.addFragment(new WeatherTab(), "WEATHER");
         adapter.addFragment(new FeaturedFragment(), "FEATURED");
         adapter.addFragment(new TextTab(), "TEXT");
-        adapter.addFragment(imageFragment, "IMAGE");
-        adapter.addFragment(videoFragment, "VIDEO");
 
         viewPager.setAdapter(adapter);
         viewPager.setOffscreenPageLimit(adapter.getCount()-1);
@@ -61,7 +54,6 @@ public class MainActivity extends AppCompatActivity {
     private void setupViewPager(ViewPager viewPager) {
         adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(new TextTab(), "ONE");
-        //adapter.addFragment(new ImageTab(), "TWO");
         //adapter.addFragment(new VideoTab(), "THREE");
         viewPager.setAdapter(adapter);
     }

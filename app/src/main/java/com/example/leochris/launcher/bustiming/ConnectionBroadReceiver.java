@@ -18,12 +18,13 @@ public class ConnectionBroadReceiver extends BroadcastReceiver {
         context.getSystemService(Context.CONNECTIVITY_SERVICE);
         if (isNetworkAvailable(context)) {
             if(BusTiming.webview != null) {
+                //fit to screen
                 BusTiming.webview.getSettings().setJavaScriptEnabled(true);
                 BusTiming.webview.getSettings().setDomStorageEnabled(true);
-
                 BusTiming.webview.getSettings().setLoadWithOverviewMode(true);
                 BusTiming.webview.getSettings().setUseWideViewPort(true);
 
+                //disable scrolling
                 BusTiming.webview.setVerticalScrollBarEnabled(false);
                 BusTiming.webview.setHorizontalScrollBarEnabled(false);
                 BusTiming.webview.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
@@ -32,6 +33,7 @@ public class ConnectionBroadReceiver extends BroadcastReceiver {
             }
         }
     }
+
     public boolean isNetworkAvailable(Context context) {
         // Get Connectivity Manager class object from Systems Service
         ConnectivityManager cm = (ConnectivityManager)  context.getSystemService(Context.CONNECTIVITY_SERVICE);

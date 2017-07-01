@@ -121,6 +121,7 @@ public class LineChart extends CardController {
 
         mChart.setLabelsColor(Color.WHITE);
 
+        //display temperature if clicked
         mBaseAction = action;
         Runnable chartAction = new Runnable() {
             @Override

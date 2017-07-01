@@ -3,26 +3,27 @@ package com.example.leochris.launcher;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Spinner;
 import android.widget.TextView;
-
-import org.w3c.dom.Text;
-
-import static com.example.leochris.launcher.R.id.imageView;
-import static com.example.leochris.launcher.R.id.select_dialog_listview;
 
 public class AddActivity extends AppCompatActivity {
 
     TextView name;
-    TextView uri;
+    TextView data;
+    Spinner spinner;
     Button choose;
-    Uri selectedImage;
+    Uri selectedUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,17 +31,70 @@ public class AddActivity extends AppCompatActivity {
         setContentView(R.layout.activity_add);
 
         name = (TextView) findViewById(R.id.editText);
-        uri = (TextView) findViewById(R.id.editUri);
+        data = (TextView) findViewById(R.id.editUri);
+        spinner = (Spinner) findViewById(R.id.spinner);
         choose = (Button) findViewById(R.id.choose);
 
         choose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent pickPhoto = new Intent(Intent.ACTION_PICK,
-                        android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(pickPhoto, 1);
+                //pick photo
+                if(spinner.getSelectedItemPosition() == 0) {
+                    Intent pickPhoto = new Intent(Intent.ACTION_PICK,
+                            android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                    startActivityForResult(pickPhoto, 0);
+                }
+
+                //pick video
+                if(spinner.getSelectedItemPosition() == 1) {
+                    Intent pickVideo = new Intent(Intent.ACTION_PICK,
+                            MediaStore.Video.Media.EXTERNAL_CONTENT_URI);
+                    startActivityForResult(pickVideo, 1);
+                }
             }
         });
+
+        //load tab types from strings resources
+        ArrayAdapter<CharSequence> dataAdapter = ArrayAdapter.createFromResource(this,
+                R.array.fragment_list, android.R.layout.simple_spinner_item);
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(dataAdapter);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                /*type values
+                * 0:Image Tab
+                * 1:Video Tab
+                * 2:Text Tab
+                * 3:Apps Grid Fragment
+                * 4:Weather Tab*/
+                switch(position){
+                    case 0:
+                    case 1:
+                        choose.setVisibility(View.VISIBLE);
+                        data.setVisibility(View.VISIBLE);
+                        data.setHint("URI");
+                        break;
+                    case 2:
+                        data.setHint("Text");
+                        data.setVisibility(View.VISIBLE);
+                        choose.setVisibility(View.GONE);
+                        break;
+                    case 3:
+                    case 4:
+                        choose.setVisibility(View.GONE);
+                        data.setVisibility(View.GONE);
+                        break;
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                choose.setVisibility(View.GONE);
+                data.setVisibility(View.GONE);
+            }
+        });
+
     }
 
     @Override
@@ -54,12 +108,20 @@ public class AddActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_ok:
-                /*Intent returnIntent = new Intent();
-                returnIntent.putExtra("uri", uri.getText().toString());
-                returnIntent.putExtra("name", name.getText().toString());
-                setResult(Activity.RESULT_OK,returnIntent);
-                finish();
-                return true;*/
+                if(TextUtils.isEmpty(name.getText()))
+                    name.setError("Name cannot be empty.");
+                if(TextUtils.isEmpty(data.getText()) && data.getVisibility() == View.VISIBLE)
+                    data.setError("This field cannot be empty.");
+                if(!TextUtils.isEmpty(name.getText()) && !(TextUtils.isEmpty(data.getText()) && data.getVisibility() == View.VISIBLE)) {
+                    //parse infos back to SettingActivity
+                    Intent returnIntent = new Intent();
+                    returnIntent.putExtra("data", data.getText().toString());
+                    returnIntent.putExtra("name", name.getText().toString());
+                    returnIntent.putExtra("type", spinner.getSelectedItemPosition() + 1);
+                    setResult(Activity.RESULT_OK, returnIntent);
+                    finish();
+                }
+                return true;
 
             default:
                 // If we got here, the user's action was not recognized.
@@ -74,15 +136,17 @@ public class AddActivity extends AppCompatActivity {
         switch(requestCode) {
             case 0:
                 if(resultCode == RESULT_OK){
-                    selectedImage = imageReturnedIntent.getData();
-                    uri.setText(selectedImage.toString());
+                    //image
+                    selectedUri = imageReturnedIntent.getData();
+                    data.setText(selectedUri.toString());
                 }
 
                 break;
             case 1:
                 if(resultCode == RESULT_OK){
-                    selectedImage = imageReturnedIntent.getData();
-                    uri.setText(selectedImage.toString());
+                    //video
+                    selectedUri = imageReturnedIntent.getData();
+                    data.setText(selectedUri.toString());
                 }
 
                 break;
