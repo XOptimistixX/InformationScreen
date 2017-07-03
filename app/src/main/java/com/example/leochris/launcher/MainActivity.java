@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -20,7 +21,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    private SmartTabLayout tabLayout;
+    private TabLayout tabLayout;
     private ViewPager viewPager;
     private int mInterval = 30000; // 5 seconds by default, can be changed later
     private Handler mHandler;
@@ -41,8 +42,8 @@ public class MainActivity extends AppCompatActivity {
         viewPager.setAdapter(adapter);
         viewPager.setOffscreenPageLimit(adapter.getCount()-1);
 
-        tabLayout = (SmartTabLayout) findViewById(R.id.tabs);
-        tabLayout.setViewPager(viewPager);
+        tabLayout = (TabLayout) findViewById(R.id.tabs);
+        tabLayout.setupWithViewPager(viewPager);
         //Set tab color
         tabLayout.setBackgroundColor(Color.parseColor("#45B39D"));
         mHandler = new Handler();
